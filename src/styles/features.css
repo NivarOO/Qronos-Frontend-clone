@@ -1,0 +1,80 @@
+/**
+ * Features section effects. Timings reference docs/reference-audit.md;
+ * slide interval mirrors the brush animation (single source: --duration-feature).
+ */
+
+.features-panel-mask {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 84%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 84%,
+    transparent 100%
+  );
+}
+
+.feature-progress-brush {
+  background: var(--foreground);
+  transform-origin: left;
+  animation: qronos-feature-progress var(--duration-feature)
+    var(--ease-linear) forwards;
+}
+
+@keyframes qronos-feature-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.pipeline-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: qronos-pulse var(--duration-pulse)
+    cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/**
+ * Received-message loop. The reference cycles its message strip
+ * (enter from +5px fade, hold, exit); only one message string is
+ * observable, so the single message loops on a 4.5s cycle.
+ * Cycle length is an approximation (documented).
+ */
+.pipeline-message-loop {
+  animation: qronos-message-cycle 4.5s var(--ease-default) infinite;
+}
+
+@keyframes qronos-message-cycle {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  12% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  78% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-progress-brush,
+  .pipeline-pulse,
+  .pipeline-message-loop {
+    animation: none;
+  }
+}

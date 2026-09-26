@@ -1,0 +1,43 @@
+/**
+ * Insights effects: gradient-bordered mini cards, budget scan beam,
+ * chart bars. Timings reuse shared tokens.
+ */
+
+.insights-gradient-border {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#0a0a0c, #0a0a0c) padding-box,
+    linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0.03)
+      )
+      border-box;
+}
+
+.budget-scan {
+  position: relative;
+}
+
+.budget-scan::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2rem;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+  animation: qronos-budget-scan var(--duration-budget-scan)
+    var(--ease-default) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .budget-scan::after {
+    animation: none;
+  }
+}

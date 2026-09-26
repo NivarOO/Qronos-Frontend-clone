@@ -1,0 +1,183 @@
+/**
+ * Navbar + Hero component styles.
+ * All timings/geometry reference docs/reference-audit.md tokens.
+ * Keyframe bodies live in tokens.css; this file wires them to components.
+ */
+
+/* Registered for the traveling border-light animation. */
+@property --star-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* --- StarButton -------------------------------------------------- */
+.star-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  font-weight: var(--weight-medium);
+  color: #fff;
+  background-color: #000;
+  border: var(--star-border-width) solid rgb(226 232 240 / 0.5);
+  cursor: pointer;
+  transition:
+    color var(--duration-control) var(--ease-default),
+    border-color var(--duration-control) var(--ease-default),
+    transform var(--duration-instant) var(--ease-default);
+}
+
+/* Traveling highlight: conic beam masked to a 2px border ring,
+   one revolution per --duration-star (3s), linear, infinite. */
+.star-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: var(--star-border-width);
+  background: conic-gradient(
+    from var(--star-angle),
+    transparent 0turn,
+    transparent 0.8turn,
+    var(--star-light-color) 0.92turn,
+    transparent 1turn
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: qronos-star-angle var(--duration-star) var(--ease-linear)
+    infinite;
+  pointer-events: none;
+}
+
+@keyframes qronos-star-angle {
+  to {
+    --star-angle: 360deg;
+  }
+}
+
+.star-button:hover {
+  border-color: rgb(226 232 240 / 0.85);
+}
+
+.star-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.star-button > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* --- White pill CTA (REQUEST A DEMO) ------------------------------ */
+.pill-button {
+  transition:
+    background-color var(--duration-instant) var(--ease-default),
+    color var(--duration-instant) var(--ease-default),
+    transform var(--duration-instant) var(--ease-default),
+    box-shadow var(--duration-control) var(--ease-default);
+}
+
+/* --- Nav link underline ------------------------------------------- */
+.nav-link {
+  position: relative;
+  color: var(--text-white-70);
+  transition: color var(--duration-control) var(--ease-default);
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1px;
+  width: 0;
+  background: #fff;
+  transition: width var(--duration-control) var(--ease-default);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* --- Hero title sizing (observed clamps) --------------------------- */
+.hero-title {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-tight);
+  line-height: 0.96;
+  font-size: clamp(2rem, 9vw, 2.5rem);
+}
+
+@media (min-width: 40rem) {
+  .hero-title {
+    line-height: 0.92;
+    font-size: clamp(2rem, 4.6vw, 4.5rem);
+  }
+}
+
+/* --- Scroll reveal (IO-driven; durations from audit) --------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(2rem);
+  transition:
+    opacity var(--duration-reveal-slow) var(--ease-default),
+    transform var(--duration-reveal-slow) var(--ease-default);
+  will-change: opacity, transform;
+}
+
+.reveal[data-offset="sm"] {
+  transform: translateY(1rem);
+}
+
+.reveal[data-offset="none"] {
+  transform: none;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Logo marquee --------------------------------------------------- */
+.logo-marquee-mask {
+  -webkit-mask-image: var(--gradient-edge-fade-x);
+  mask-image: var(--gradient-edge-fade-x);
+}
+
+.logo-track {
+  display: flex;
+  width: max-content;
+  gap: 42px;
+  animation: qronos-marquee var(--duration-marquee) var(--ease-linear)
+    infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-button::after,
+  .logo-track,
+  .reveal {
+    animation: none;
+    transition: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

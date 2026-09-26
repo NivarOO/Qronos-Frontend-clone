@@ -1,0 +1,366 @@
+/**
+ * Central design-token system — Qronos reconstruction.
+ *
+ * Source of truth for color / type / spacing / radius / shadow / motion.
+ * Values transcribed from docs/reference-audit.md (observed, not copied code).
+ *
+ * Rules:
+ * - Components must reference these vars (or Tailwind utilities mapped to them).
+ * - No scattered hex/rgba duplicates when a token exists — add the token here instead.
+ * - Translucency uses rgba/alpha + color-mix, never flattened solid substitutes.
+ * - Blur is only `--blur-backdrop` (pricing CTA), nowhere else.
+ */
+
+/* ------------------------------------------------------------------ */
+/* 1. Core palette (exact names required by the brief)                 */
+/* ------------------------------------------------------------------ */
+:root {
+  --background: #000101;
+  --foreground: #ecebe7;
+  --muted: #040608;
+  --muted-foreground: #757168;
+  --border: #101215;
+  --accent: #07090d;
+  --accent-foreground: #ecebe7;
+  --card: #020204;
+  --card-foreground: #ecebe7;
+  --card-border: #37333b;
+
+  /* Supporting observed tokens */
+  --input: #07090c;
+  --ring: #ecebe7;
+  --popover: #020204;
+  --popover-foreground: #ecebe7;
+  --primary: #ecebe7;
+  --primary-foreground: #000101;
+  --secondary: #040608;
+  --secondary-foreground: #ecebe7;
+  --destructive: #e40014;
+
+  /* Status accents (observed dots / pills / bars) */
+  --status-green: #00c758;
+  --status-emerald: #00d294;
+  --status-emerald-deep: #009767;
+  --status-orange: #ff8b1a;
+  --status-amber: #ffd236;
+  --status-rose: #ff667f;
+  --status-red-soft: #ffa3a3;
+  --status-sky: #00bcfe;
+  --status-cyan: #00d2ef;
+  --status-violet: #a685ff;
+  --status-slate-blue: #8ab4ff;
+
+  /* Chart ramp (observed --chart-1..5) */
+  --chart-1: #ecebe7;
+  --chart-2: #a7a49e;
+  --chart-3: #6c695f;
+  --chart-4: #3c3a35;
+  --chart-5: #171612;
+
+  /* ---------------------------------------------------------------- */
+  /* 2. Typography                                                     */
+  /* ---------------------------------------------------------------- */
+  /* FONT SUBSTITUTION (documented): reference declares "Google Sans"
+     but ships zero webfont files, so it renders as system sans.
+     We map --font-display to Inter (closest geometric-humanist Google
+     Font) with the same system fallback chain, tracked tight to match.
+     Body + mono match the reference stacks exactly. */
+  --font-sans: system-ui, -apple-system, blinkmacsystemfont, "Segoe UI",
+    sans-serif;
+  --font-display: "Inter", system-ui, -apple-system, blinkmacsystemfont,
+    "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", consolas, "Liberation Mono", monospace;
+  --font-serif: ui-serif, georgia, cambria, "Times New Roman", times, serif;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.333;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.4286;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.625;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.6;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.2;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 1.1;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 1.05;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+
+  --tracking-tight: -0.025em;
+  --tracking-mono: 0.08em;
+  --tracking-mono-wide: 0.12em;
+  --leading-relaxed: 1.625;
+  --leading-display: 0.95;
+
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-extrabold: 800;
+
+  /* ---------------------------------------------------------------- */
+  /* 3. Spacing / layout                                               */
+  /* ---------------------------------------------------------------- */
+  --spacing: 0.25rem;
+  --max-page: 1400px;
+  --max-content: 1344px;
+  --gutter-mobile: 15px;
+  --gutter-desktop: 56px; /* lg:px-14 */
+  --section-pt: 6rem; /* pt-24 */
+  --section-pt-lg: 8rem; /* lg:pt-32 */
+  --section-pb: 4rem; /* pb-16 */
+  --section-pb-lg: 5rem; /* lg:pb-20 */
+  --header-height: 3rem; /* h-12 */
+  --card-pad-outer: 5px; /* double-frame outer */
+  --card-pad-inner: 1rem; /* inner p-4 */
+  --gap-card: 1.5rem; /* gap-6 grids */
+
+  /* ---------------------------------------------------------------- */
+  /* 4. Radius                                                         */
+  /* ---------------------------------------------------------------- */
+  --radius: 0.25rem;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-3xl: 1.5rem;
+  --radius-card-outer: 14px;
+  --radius-card-inner: 8px;
+  --radius-pill: 999px;
+
+  /* ---------------------------------------------------------------- */
+  /* 5. Shadows (all observed inset/composition values)                */
+  /* ---------------------------------------------------------------- */
+  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.08),
+    inset 0 -1px 0 rgb(0 0 0 / 0.7);
+  --shadow-card-soft: inset 0 1px 0 rgb(255 255 255 / 0.025),
+    inset 0 -1px 0 rgb(0 0 0 / 0.7);
+  --shadow-pipeline: 0 14px 50px rgb(0 0 0 / 0.45);
+  --shadow-cta: inset 0 1px 0 rgb(255 255 255 / 0.18),
+    0 8px 20px rgb(0 0 0 / 0.18);
+  --shadow-avatar: 0 1px 2px rgb(0 0 0 / 0.15);
+  --shadow-glow-green: 0 0 5px rgb(244 63 94 / 0.35);
+
+  /* ---------------------------------------------------------------- */
+  /* 6. Motion                                                         */
+  /* ---------------------------------------------------------------- */
+  --duration-instant: 150ms;
+  --duration-fast: 200ms;
+  --duration-control: 300ms;
+  --duration-lift: 400ms;
+  --duration-reveal: 700ms;
+  --duration-reveal-slow: 1000ms;
+  --duration-marquee: 30s;
+  --duration-marquee-reverse: 25s;
+  --duration-star: 3s;
+  --duration-beam: 5s;
+  --duration-feature: 6s;
+  --duration-budget-scan: 5.6s;
+  --duration-pulse: 2s;
+  --delay-150: 150ms;
+  --delay-200: 200ms;
+  --delay-300: 300ms;
+  --delay-500: 500ms;
+
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-reveal: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-char: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-linear: linear;
+
+  /* ---------------------------------------------------------------- */
+  /* 7. Reference gradients (as CSS gradients, not images)             */
+  /* ---------------------------------------------------------------- */
+  --gradient-card: linear-gradient(
+    145deg,
+    rgb(19 19 21 / 0.98),
+    rgb(7 7 8 / 0.98)
+  );
+  --gradient-card-top-wash: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.07) 0%,
+    rgb(255 255 255 / 0.03) 40%,
+    transparent 100%
+  );
+  --gradient-headline: linear-gradient(
+    to bottom,
+    #ffffff,
+    #d4d4d8 50%,
+    #71717b
+  );
+  --gradient-pipeline-bg: radial-gradient(
+      circle at 50% 0%,
+      rgb(255 255 255 / 0.055),
+      transparent 70%
+    ),
+    linear-gradient(#0a0a0c, #070708);
+  --gradient-insights-bg: radial-gradient(
+      circle at 50% 0%,
+      rgb(94 73 86 / 0.24),
+      transparent 68%
+    ),
+    linear-gradient(#09090c, #09090c);
+  --gradient-hero-right: linear-gradient(
+    to right,
+    rgb(0 0 0 / 0.7),
+    rgb(0 0 0 / 0.3),
+    transparent
+  );
+  --gradient-hero-bottom: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.2),
+    transparent,
+    rgb(0 0 0 / 0.6)
+  );
+  --gradient-hatch: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 6px,
+    rgb(255 255 255 / 0.06) 6px,
+    rgb(255 255 255 / 0.06) 7px
+  );
+  --gradient-bar-cyan: linear-gradient(
+    to right,
+    rgb(0 146 181 / 0.8),
+    #00d2ef,
+    #a2f4fd
+  );
+  --gradient-bar-emerald: linear-gradient(
+    to right,
+    rgb(0 151 103 / 0.8),
+    #00d294,
+    #a4f4cf
+  );
+  --gradient-bar-violet: linear-gradient(
+    to right,
+    rgb(127 34 254 / 0.8),
+    #a685ff,
+    #ddd6ff
+  );
+  --gradient-hairline-h: linear-gradient(
+    to right,
+    transparent,
+    rgb(226 232 240 / 0.65) 50%,
+    transparent
+  );
+  --gradient-hairline-v: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(226 232 240 / 0.65) 50%,
+    transparent
+  );
+  --gradient-edge-fade-x: linear-gradient(
+    to right,
+    transparent,
+    black 25%,
+    black 75%,
+    transparent
+  );
+
+  /* ---------------------------------------------------------------- */
+  /* 8. Translucent surfaces / borders (alpha preserved)               */
+  /* ---------------------------------------------------------------- */
+  --surface-white-045: rgb(255 255 255 / 0.045);
+  --surface-white-06: rgb(255 255 255 / 0.06);
+  --surface-white-10: rgb(255 255 255 / 0.1);
+  --border-white-06: rgb(255 255 255 / 0.06);
+  --border-white-08: rgb(255 255 255 / 0.08);
+  --border-white-12: rgb(255 255 255 / 0.12);
+  --text-white-70: rgb(255 255 255 / 0.7);
+  --text-white-50: rgb(255 255 255 / 0.5);
+  --text-white-40: rgb(255 255 255 / 0.4);
+  --text-white-30: rgb(255 255 255 / 0.3);
+
+  /* Blur — observed ONLY on pricing CTA */
+  --blur-backdrop: 12px;
+
+  /* StarButton traveling highlight */
+  --star-light-color: #fafafa;
+  --star-light-width: 110px;
+  --star-border-width: 2px;
+
+  /* Particle field defaults (observed CTA canvas) */
+  --particle-color: #e4e4e7;
+  --particle-horizon: #a1a1aa;
+}
+
+/* Dark is the only theme in the reference — lock color-scheme. */
+:root {
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ */
+/* Keyframes observed in the reference bundle                          */
+/* ------------------------------------------------------------------ */
+@keyframes qronos-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes qronos-star-btn {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes qronos-budget-scan {
+  0% {
+    opacity: 0;
+    transform: translateX(-2rem);
+  }
+  25%,
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(800%);
+  }
+}
+
+@keyframes qronos-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes qronos-line-reveal {
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes qronos-char-in {
+  from {
+    opacity: 0;
+    transform: translateY(60%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-marquee: 0.01s;
+    --duration-star: 0.01s;
+    --duration-budget-scan: 0.01s;
+    --duration-pulse: 0.01s;
+  }
+}

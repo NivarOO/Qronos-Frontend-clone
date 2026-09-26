@@ -1,0 +1,42 @@
+/**
+ * How-it-works effects. Beam timing mirrors the reference guardrail card
+ * (5s linear loop); pulse dots reuse the shared pulse tokens.
+ */
+
+.guardrail-frame {
+  isolation: isolate;
+}
+
+/* Light beam traveling the 12px frame ring, one loop per --duration-beam. */
+.guardrail-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 16;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--star-angle),
+    transparent 0turn,
+    transparent 0.8turn,
+    var(--star-light-color) 0.92turn,
+    transparent 1turn
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: qronos-star-angle var(--duration-beam) var(--ease-linear)
+    infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guardrail-frame::after {
+    animation: none;
+  }
+}
