@@ -1,30 +1,21 @@
 {
-  "name": "qronos2",
+  "name": "qronos-mern",
   "version": "1.0.0",
-  "description": "",
   "private": true,
+  "description": "Qronos MERN stack — Express + Mongoose API serving a React + Vite + Tailwind frontend",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "seed": "npm --prefix server run seed",
+    "build": "npm --prefix client run build",
+    "start": "NODE_ENV=production npm --prefix server run start",
+    "typecheck": "npm --prefix client run typecheck",
+    "make": "npm run install:all && npm run build",
+    "all": "concurrently --kill-others-on-fail --names \"server,client\" --prefix-colors \"green,cyan\" \"npm run dev:server\" \"npm run dev:client\""
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
-  "dependencies": {
-    "lucide-react": "^1.48.0",
-    "next": "^16.3.6",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
-  },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.3",
-    "@types/node": "^26.6.3",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "postcss": "^8.5.28",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^7.0.2"
+    "concurrently": "^10.0.5"
   }
 }

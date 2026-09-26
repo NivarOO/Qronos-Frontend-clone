@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./navbar-hero.css";
+@import "./features.css";
+@import "./how-it-works.css";
+@import "./insights.css";
+@import "./testimonials.css";
+
+/* Tailwind v4 theme — maps utilities (bg-background, text-muted-…) to the
+   central tokens above. Single source of truth stays in tokens.css. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-card-border: var(--card-border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgb(255 255 255 / 0.85);
+  color: #000;
+}
+
+/* Accessible focus — reference uses focus-visible rings only. */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Headline gradient helper (H1 second line, CTA second line). */
+.text-gradient-headline {
+  background: var(--gradient-headline);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Double-frame card shell shared by pricing / testimonials / demos. */
+.card-frame {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card-outer);
+  background: var(--gradient-card);
+  box-shadow: var(--shadow-card);
+}
+
+.card-frame-inner {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card-inner);
+  background: var(--gradient-card);
+  box-shadow: var(--shadow-card-soft);
+}
